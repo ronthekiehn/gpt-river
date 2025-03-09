@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The River of Words</title>
+    <style>
+
+        
+        :root {
+            --color-primary: rgb(217, 147, 167);
+            --color-secondary: #08192B;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: monospace;
+           
+            background-color:  var(--color-secondary);
+            font-weight: 400;
+            font-size: 12px;
+            color: #E99570;
+        }
+        
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .static-content{
+            color: #eee;
+            word-break: break-all;
+            line-height: 1.2;
+            transform: translateZ(0);  /* GPU acceleration */
+            backface-visibility: hidden;
+            perspective: 1000;
+            letter-spacing: 0.2em;  /* Ensure even character spacing */
+            user-select: none;  /* Prevent text selection */
+            position: relative;  /* Create stacking context */
+            font-variant-ligatures: none;  /* Prevent ligature issues */
+            font-kerning: none;  /* Disable kerning */
+            font-feature-settings: "kern" 0, "liga" 0;  /* Disable OpenType features */
+            will-change: contents;  /* Optimize for frequent changes */
+            text-rendering: optimizeLegibility;  /* Better text rendering */
+        }
+        
+        .river-container {
+            border: 2px solid var(--color-primary);
+            position: relative;
+            width: 1100px;
+            height: 490px;
+            margin: 0 auto;
+            overflow: hidden;
+            will-change: contents;
+          }
+
+          
+          .river-top {
+            float: right;
+            width: 100%;
+            height: 190px;
+            ackground-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 800 300'%3E%3Cpath d='M0,80 L800,100 L800,0 L0,0 Z M0,80 C120,280 320,80 500,190 C600,280 780,260 800,290 L800,100 Z' fill='%23000'/%3E%3C/svg%3E");
+            shape-outside: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 800 300'%3E%3Cpath d='M0,80 L800,100 L800,0 L0,0 Z M0,80 C120,280 320,80 500,190 C600,280 780,260 800,290 L800,100 Z' fill='%23000'/%3E%3C/svg%3E");
+            shape-margin: 1px;
+            clear: left;
+            
+          }
+
+          
+          
+          .river-bottom {
+            float: left;
+            width: 100%;
+            height: 300px;
+            ackground-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 800 600'%3E%3Cpath d='M0,280 L800,300 L800,600 L0,600 Z M0,280 C200,480 320,280 500,390 C600,480 780,460 800,600 L800,300 Z' fill='%23000'/%3E%3C/svg%3E");
+            shape-outside: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 800 600'%3E%3Cpath d='M0,280 L800,300 L800,600 L0,600 Z M0,280 C200,480 320,280 500,390 C600,480 780,460 800,600 L800,300 Z' fill='%23000'/%3E%3C/svg%3E");
+            shape-margin: 1px;
+            padding-bottom: 10px;
+            clear: right;
+          }
+        
+        .description {
+            color: var(--color-primary);
+        }
+        header{
+            margin: auto auto 20px;
+        }
+        footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            gap: 5px;
+            font-size: 10px;
+            text-align: center;
+            color: var(--color-primary);
+        }
+
+        a {
+            color: var(--color-primary);
+        }
+
+        b{
+            color: #fff;
+        }
+        
+        .contribution-form {
+            position: relative;
+            flex-grow: 1;
+            max-height: 100px;
+            margin-top: -20px;
+        }
+        
+        #word-input {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translateX(-50%) translateY(-50%);
+            background-color: transparent;
+            padding: 12px 24px;
+            border: 2px solid var(--color-primary);
+            border-radius: 999px;
+            text-align: center;
+            font-family: monospace;
+            color: var(--color-primary);
+        }
+
+        #word-input::placeholder {
+            color: rgba(217, 147, 167, 0.5);
+        }
+
+        #word-input:focus {
+            outline: none;
+        }
+        
+        #contribute-btn {
+            position: absolute;
+            left: 50%;
+            top: calc(50% + 35px);
+            transform: translateX(-50%) translateY(-50%);
+            visibility: hidden;
+            padding: 8px;
+            background-color: transparent;
+            color: var(--color-primary);
+            border: none;
+            cursor: pointer;
+        }
+        #contribute-btn:hover {
+            text-decoration: underline;
+        }
+        
+        #message {
+            position: absolute;
+            left: 50%;
+            top: calc(50% - 35px);
+            transform: translateX(-50%) translateY(-50%);
+            font-size: 12px;
+            color: var(--color-primary);
+        }
+        
+        .user-contribution {
+            font-weight: bold;
+            display: inline;
+        }
+        .githubicon{
+            width: 24px;
+            height:24px;
+            transform: scale(0.7);
+        }
+        
+        .word {
+            display: inline;
+            contain: content;  /* Containment for individual words */
+            paint-order: stroke;  /* Optimize paint */
+        }
+
+        .lofi-beats{
+            font-size: 10px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: start;
+            width: 1100px;
+            margin: 0 auto;
+            z-index: 1000;
+        }
+
+
+        @media screen and (max-width: 1100px) {
+            .river-container {
+                width: 100%;
+            }
+
+            .lofi-beats {
+                width: 100%;
+            }
+          }
+        @media screen and (max-width: 768px) {
+            .contribution-form{
+                margin-top: 0;
+            }
+
+            .static-content{
+                font-size: 10px;
+            }
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <p class="description">the text below is generated by gpt-2. openai’s last open source model, released in 2019.</p>
+            <p class="description">words in <b>bold</b> are being written by users (like you).</p>
+        </header>
+        
+        <div class="river-container" id="river-container">
+            <div class="river-top"></div>
+            <div class="river-bottom"></div>
+            <div class="static-content" id="static-content"></div>
+        </div>
+        <div class="lofi-beats">
+            <p class="description">unmute to listen to <a href="https://www.youtube.com/watch?v=jfKfPfyJRdk" target="_blank">lofi beats</a></p>
+            <button id="muteButton" style="transform: scale(0.8); margin-top: 4px; background: none; border: none; cursor: pointer;">
+            <!-- MUTED SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(217, 147, 167)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x">
+                    <path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z" />
+                    <line x1="22" x2="16" y1="9" y2="15" />
+                    <line x1="16" x2="22" y1="9" y2="15" />
+                </svg>
+            </button>
+        </div>
+        
+        
+        <form autocomplete="off" class="contribution-form" id="contribution-form">
+            <input type="text" id="word-input" maxlength="15" placeholder="add a word">
+            <button type="submit" id="contribute-btn">send</button>
+            <span id="message"></span>
+        </form>
+        
+        <footer>
+            <p class="description">gptriver was made with <3 by <a href="https://ronkiehn.dev" target="_blank">ron</a> and claude
+            </p>
+            <a href="https://github.com/your-repo" target="_blank">
+                <svg class="githubicon" role="img" xmlns="http://www.w3.org/2000/svg">
+                    <title>GitHub</title>
+                    <path viewBox="0 0 24 24"d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" fill="rgb(217, 147, 167)"/>
+                </svg>
+            </a>
+            
+            <div id="player" style="display:none;"></div>
+            
+        </footer>
+
+
+<script>
+    const MAX_CHARS = 2000;
+    const staticContentElement = document.getElementById('static-content');
+    const riverElement = document.getElementById('river');
+    const wordInput = document.getElementById('word-input');
+    const contributeForm = document.getElementById('contribution-form');
+    const messageSpan = document.getElementById('message');
+    
+    let fullText = "";
+    let isTyping = false;
+    let currentSequence = -1;
+    let textQueue = [];
+    let lastUpdateTime = 0;
+    const MAX_WORD_COLORS = 1000;
+    const wordColors = new Map();
+    const UPDATE_INTERVAL = 50; // Reduced from 100ms to 50ms for smoother updates
+    const TYPING_SPEED_MIN = 150;
+    const TYPING_SPEED_MULTIPLIER = 3900;
+    const BATCH_SIZE = 3;
+    
+    // Add a virtual DOM-like text buffer
+    let virtualContent = "";
+    let updateScheduled = false;
+
+    // Initial load
+    async function initialLoad() {
+        try {
+            const response = await fetch('/text');
+            const data = await response.json();
+            fullText = data.text;
+            if (fullText.length > MAX_CHARS){
+                fullText = fullText.slice(-MAX_CHARS);
+            }
+            console.log(fullText);
+            currentSequence = data.sequence - 1;
+            
+            // Show text immediately
+            updateDisplayedText();
+        } catch (error) {
+            console.error('Error loading initial text:', error);
+            staticContentElement.innerHTML = "Error loading text.";
+        }
+                
+        // Poll for new text every 2 seconds
+        pollForNewText();
+    }
+    
+    // Poll for new text
+    async function pollForNewText() {
+        try {
+            const response = await fetch('/text');
+            const data = await response.json();
+            
+            if (data.sequence > currentSequence) {
+                console.log('New text detected (sequence:', data.sequence, 'current:', currentSequence, ')');
+                
+                const newText = data.new_text;
+                currentSequence = data.sequence;
+                
+                if (isTyping) {
+                    console.log('Animation in progress, adding to queue:', newText);
+                    
+                    if (!textQueue.includes(newText)) {
+                        textQueue.push(newText);
+                    }
+
+                    console.log("textq length", textQueue);
+                } else {
+                    console.log('Starting animation for:', newText);
+                    animateTyping(newText);
+                }
+            }
+        } catch (error) {
+            console.error('Error polling for new text:', error);
+        }
+        setTimeout(pollForNewText, 1000);
+    }
+    
+    // Process next item in queue if available
+    function processNextInQueue() {
+        if (textQueue.length > 0) {
+            console.log('Processing next item in queue');
+            const nextText = textQueue.shift();
+            animateTyping(nextText);
+        } else {
+            isTyping = false;
+        }
+    }
+    
+    // Efficiently update the displayed text
+    function updateDisplayedText() {
+        const newContent = formatText(fullText);
+        if (newContent !== virtualContent) {
+            virtualContent = newContent;
+            staticContentElement.innerHTML = newContent;
+        }
+    }
+    
+    // More efficient animation with batched updates
+    function animateTyping(text) {
+        if (!text || text.trim() === '') {
+            if (textQueue.length > 0) {
+                processNextInQueue();
+            } else {
+                isTyping = false;
+            }
+            return;
+        }
+        
+        const chars = text.split('');
+        const typingSpeed = Math.max(TYPING_SPEED_MIN, Math.round(TYPING_SPEED_MULTIPLIER / chars.length) * BATCH_SIZE);
+        let index = 0;
+        isTyping = true;
+        
+        function addNextBatch() {
+            const now = performance.now();
+            if (now - lastUpdateTime < UPDATE_INTERVAL) {
+                // Too soon to update, schedule next batch
+                setTimeout(addNextBatch, UPDATE_INTERVAL - (now - lastUpdateTime));
+                return;
+            }
+            
+            let batchCount = 0;
+            while (index < chars.length && batchCount < BATCH_SIZE) {
+                if (chars[index] && chars[index].charCodeAt(0) < 128) {
+                    if (fullText.length >= MAX_CHARS) {
+                        fullText = fullText.substring(BATCH_SIZE);
+                    }
+                    fullText += chars[index];
+                }
+                index++;
+                batchCount++;
+            }
+            
+            lastUpdateTime = now;
+            scheduleUpdate();
+            
+            if (index < chars.length) {
+                setTimeout(addNextBatch, typingSpeed);
+            } else {
+                if (fullText.length > MAX_CHARS) {
+                    fullText = fullText.slice(-MAX_CHARS);
+                    scheduleUpdate();
+                }
+                processNextInQueue();
+            }
+        }
+        
+        addNextBatch();
+    }
+    
+    // Format text with highlighting for user contributions
+    // Use a more efficient implementation
+    const COLORS = [
+        '#335368', 
+        '#2C4B5F',
+        '#56737B',
+        '#838D80',
+        '#828D87',
+        '#36526A', 
+        '#607B82'
+    ];
+
+    function getRandomColor() {
+        return COLORS[Math.floor(Math.random() * COLORS.length)];
+    }
+
+    // Update the formatText function
+    function formatText(text) {
+        if (!text) return "";
+        
+        function encodeHTML(str) {
+            return str.replace(/[&<>"']/g, function(match) {
+                const symbols = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return symbols[match];
+            });
+        }
+        
+        const words = text.split(/(\[\[.*?\]\]|\s+)/);
+        
+        if (wordColors.size > MAX_WORD_COLORS) {
+            const entries = Array.from(wordColors.entries());
+            entries.slice(0, entries.length - MAX_WORD_COLORS).forEach(([key]) => {
+                wordColors.delete(key);
+            });
+        }
+        
+        return words.map(word => {
+            if (!word) return '';
+            
+            const userContributionMatch = word.match(/\[\[(.*?)\]\]/);
+            if (userContributionMatch) {
+                return `<span class="user-contribution">${encodeHTML(userContributionMatch[1])}</span>`;
+            }
+            if (/^\s+$/.test(word)) {
+                return word;
+            }
+            
+            if (!wordColors.has(word)) {
+                wordColors.set(word, getRandomColor());
+            }
+            
+            return `<span class="word" style="color: ${wordColors.get(word)}">${encodeHTML(word)}</span>`;
+        }).join('');
+    }
+
+    // Handle user contributions
+    contributeForm.onsubmit = (async (event) => {
+        event.preventDefault();
+        const word = wordInput.value.trim();
+        
+        if (!word) {
+            messageSpan.textContent = 'please enter a word';
+            return;
+        }
+        
+        if (word.split(' ').length > 1) {
+            messageSpan.textContent = 'please only enter one word';
+            setTimeout(() => { messageSpan.textContent = ''; }, 4000);
+            return;
+        }
+        
+        try {
+            wordInput.disabled = true;  // Disable input
+            const response = await fetch('/contribute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ word })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                wordInput.value = '';
+                messageSpan.textContent = 'your word is on its way!';
+                setTimeout(() => { 
+                    messageSpan.textContent = ''; 
+                    wordInput.disabled = false;  // Re-enable input
+                }, 4000);
+            } else {
+                messageSpan.textContent = `error: ${result.message}` || 'error adding word';
+                setTimeout(() => { 
+                    messageSpan.textContent = ''; 
+                    wordInput.disabled = false;  // Re-enable input
+                }, 4000);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            messageSpan.textContent = 'error connecting to server';
+            setTimeout(() => { 
+                messageSpan.textContent = ''; 
+                wordInput.disabled = false;  // Re-enable input
+            }, 4000);
+        }
+    });
+    
+    // Start everything
+    initialLoad();
+
+    // More efficient update mechanism
+    function scheduleUpdate() {
+        if (!updateScheduled) {
+            updateScheduled = true;
+            requestAnimationFrame(() => {
+                updateDisplayedText();
+                updateScheduled = false;
+            });
+        }
+    }
+
+    // Optimized word color management
+    const wordColorCache = new Map();
+    let lastCleanupTime = Date.now();
+    
+    function getRandomColor() {
+        return COLORS[Math.floor(Math.random() * COLORS.length)];
+    }
+    
+    function cleanupColorCache() {
+        const now = Date.now();
+        if (now - lastCleanupTime > 30000) { // Cleanup every 30 seconds
+            if (wordColorCache.size > MAX_WORD_COLORS) {
+                const entries = Array.from(wordColorCache.entries());
+                entries.slice(0, entries.length - MAX_WORD_COLORS).forEach(([key]) => {
+                    wordColorCache.delete(key);
+                });
+            }
+            lastCleanupTime = now;
+        }
+    }
+
+
+    // Load the YouTube IFrame API code asynchronously.
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+        height: '0',
+        width: '0',
+        videoId: 'jfKfPfyJRdk', // lofi stream video ID
+        playerVars: {
+            'autoplay': 1,
+            'mute': 1,    // Start muted to allow autoplay
+            'loop': 1,
+            'playlist': 'jfKfPfyJRdk'
+        },
+        events: {
+            'onReady': onPlayerReady
+        }
+        });
+    }
+
+    function onPlayerReady(event) {
+        // The player auto-plays muted.
+    }
+
+    // Define the SVG icons as strings for easy swapping.
+    const mutedSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(217, 147, 167)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-x"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></svg>`;
+    
+    const unmutedSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgb(217, 147, 167)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg>`;
+
+    // Get the button element.
+    const muteButton = document.getElementById('muteButton');
+
+    // Toggle mute state on button click.
+    muteButton.addEventListener('click', function() {
+        if (player) {
+        if (player.isMuted()) {
+            player.unMute();
+            // Change icon to UNMUTED
+            muteButton.innerHTML = unmutedSVG;
+        } else {
+            player.mute();
+            // Change icon to MUTED
+            muteButton.innerHTML = mutedSVG;
+        }
+        }
+    });
+
+    const contributeBtn = document.getElementById('contribute-btn');
+
+    wordInput.addEventListener('input', function() {
+        if (this.value.trim()) {
+            contributeBtn.style.visibility = 'visible';
+            contributeBtn.style.opacity = '1';
+        } else {
+            contributeBtn.style.visibility = 'hidden';
+            contributeBtn.style.opacity = '0';
+        }
+    });
+
+    // Keep button visible as long as there's text in the input
+    wordInput.addEventListener('blur', function() {
+        if (this.value.trim()) {
+            contributeBtn.style.visibility = 'visible';
+        }
+    });
+
+    // Clear input and hide button after successful submission
+    contributeForm.addEventListener('submit', function() {
+
+        contributeBtn.style.visibility = 'hidden';
+
+    });
+</script>
+</body>
+</html>
