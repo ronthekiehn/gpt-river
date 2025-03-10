@@ -24,7 +24,7 @@ is_generating = False  # Flag to track active generation
 fallback_text = "Once upon a time..."
 
 # Rate limiting and validation
-RATE_LIMIT_SECONDS = 3  # Time between allowed contributions
+RATE_LIMIT_SECONDS = 4  # Time between allowed contributions
 MAX_WORD_LENGTH = 15
 contribution_timestamps = {}  # IP -> last contribution time
 
@@ -290,7 +290,7 @@ def contribute():
             contribution_timestamps = {
                 ip: timestamp 
                 for ip, timestamp in contribution_timestamps.items() 
-                if now - timestamp < 3600  # Keep last hour
+                if now - timestamp < 600  # Keep last 10 minutes
             }
             
         with threading.Lock():
