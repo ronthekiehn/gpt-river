@@ -116,7 +116,7 @@ def generate_text():
     counter = 0
     
     while True:
-        start_time = time.time()
+        #start_time = time.time()
         # Only start a new generation if we're not already generating
         if generation_lock.acquire(blocking=False):  # Non-blocking attempt to acquire lock
             try:
