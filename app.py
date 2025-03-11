@@ -57,6 +57,7 @@ is_generating = False
 RATE_LIMIT_SECONDS = 4
 MAX_WORD_LENGTH = 15
 contribution_timestamps = {}
+interval = 3.5
 
 def generate_text():
     """Background thread that generates text periodically"""
@@ -153,7 +154,8 @@ def generate_text():
                     
                     new_text = " ".join(words)
                 
-                print(f"Time taken: {time.time() - start_time:.2f}s")
+                elapsed = time.time() - start_time
+                sleep_time = max(0, interval - elapsed)
                 # Update in-memory storage
                 river_storage.update(current_text + ' ' + new_text, new_text)
                 
@@ -163,7 +165,7 @@ def generate_text():
                 is_generating = False
                 generation_lock.release()
         
-        time.sleep(3)
+        time.sleep(sleep_time)
 
 @app.route('/')
 def index():
