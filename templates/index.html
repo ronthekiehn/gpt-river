@@ -363,9 +363,9 @@
     let lastUpdateTime = 0;
     const MAX_WORD_COLORS = 1000;
     const wordColors = new Map();
-    const UPDATE_INTERVAL = 50; // Reduced from 100ms to 50ms for smoother updates
-    const TYPING_SPEED_MIN = 150;
-    const TYPING_SPEED_MULTIPLIER = 3900;
+    const UPDATE_INTERVAL = 50;
+    const TYPING_SPEED_MAX = 168;
+    const TYPING_SPEED_MULTIPLIER = 4500;
     const BATCH_SIZE = 3;
     
     // Add a virtual DOM-like text buffer
@@ -458,7 +458,7 @@
         }
         
         const chars = text.split('');
-        const typingSpeed = Math.max(TYPING_SPEED_MIN, Math.round(TYPING_SPEED_MULTIPLIER / chars.length) * BATCH_SIZE);
+        const typingSpeed = Math.max(TYPING_SPEED_MAX, Math.round(TYPING_SPEED_MULTIPLIER / chars.length) * BATCH_SIZE);
         let index = 0;
         isTyping = true;
         

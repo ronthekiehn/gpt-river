@@ -57,7 +57,7 @@ is_generating = False
 RATE_LIMIT_SECONDS = 4
 MAX_WORD_LENGTH = 15
 contribution_timestamps = {}
-interval = 3.5
+interval = 4
 
 def generate_text():
     """Background thread that generates text periodically"""
@@ -138,7 +138,7 @@ def generate_text():
                     new_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
                 
                 # Only keep the first 80 characters
-                new_text = new_text[:78]
+                new_text = new_text[:80]
                 
                 # Add user contributions if available
                 user_contributions = []
@@ -156,7 +156,7 @@ def generate_text():
                 
                 elapsed = time.time() - start_time
                 sleep_time = max(0, interval - elapsed)
-                print(f"Generated text in {elapsed:.2f}s, sleeping for {sleep_time:.2f}s")
+                #print(f"Generated text in {elapsed:.2f}s, sleeping for {sleep_time:.2f}s")
                 # Update in-memory storage
                 river_storage.update(current_text + ' ' + new_text, new_text)
                 
