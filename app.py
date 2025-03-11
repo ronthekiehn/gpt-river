@@ -69,6 +69,7 @@ def generate_text():
     while True:
         if generation_lock.acquire(blocking=False):
             try:
+                start_time = time.time()
                 is_generating = True
                 
                 # Get current text from memory
@@ -152,6 +153,7 @@ def generate_text():
                     
                     new_text = " ".join(words)
                 
+                print(f"Time taken: {time.time() - start_time:.2f}s")
                 # Update in-memory storage
                 river_storage.update(current_text + ' ' + new_text, new_text)
                 
