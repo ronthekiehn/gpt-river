@@ -156,6 +156,7 @@ def generate_text():
                 
                 elapsed = time.time() - start_time
                 sleep_time = max(0, interval - elapsed)
+                print(f"Generated text in {elapsed:.2f}s, sleeping for {sleep_time:.2f}s")
                 # Update in-memory storage
                 river_storage.update(current_text + ' ' + new_text, new_text)
                 
