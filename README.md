@@ -4,7 +4,8 @@ A testimate to how far language models have come. GPT River is an interactive ar
 
 **Check it out:** [gptriver.ronkiehn.dev](https://gptriver.ronkiehn.dev)
 
-![GPT River Screenshot](https://i.imgur.com/placeholder.jpg)
+<img width="1191" alt="image" src="https://github.com/user-attachments/assets/65f4d471-42ea-4f3d-b581-0bf86686ca51" />
+
 
 ## Stack
 
