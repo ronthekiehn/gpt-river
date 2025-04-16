@@ -1,8 +1,10 @@
 # gpt-river
 
-A testimate to how far language models have come. GPT River is an interactive art piece that generates a continuous flow of text using GPT-2. Users can contribute individual words that will be incorporated into the generated text stream, as well as GPT-2's context.
+**gptriver is no longer being hosted, if you'd like to self host it, see the section below!**
 
-**Check it out:** [gptriver.ronkiehn.dev](https://gptriver.ronkiehn.dev)
+if you just want to listen to lofi, on a site that doesn't work, you can still see the river at [ronthekiehn.github.io/gpt-river](https://ronthekiehn.github.io/gpt-river)
+
+A testimate to how far language models have come. GPT River is an interactive art piece that generates a continuous flow of text using GPT-2. Users can contribute individual words that will be incorporated into the generated text stream, as well as GPT-2's context.
 
 <img width="1191" alt="image" src="https://github.com/user-attachments/assets/65f4d471-42ea-4f3d-b581-0bf86686ca51" />
 
